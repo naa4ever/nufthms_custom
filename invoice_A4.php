@@ -454,15 +454,20 @@
 
                                         $currency = $GLOBALS['settings']->currency ?? 'Saudi Riyals';
 
-                                            if ($cents > 0) { $words .= ' and ' . $cents . '/100'; }
+                                            if ($cents > 0) {
+                                                $halalasWords = trim(_w3($cents, $ones, $tens));
+                                                $halalaLabel = ($cents == 1) ? 'Halala' : 'Halalas';
 
-                                        return $words . ' ' . ($GLOBALS['settings']->currency ?? 'Saudi Riyals');
+                                                return $words . ' ' . $currency . ' and ' . $halalasWords . ' ' . $halalaLabel;
+                                            }
+
+                                            return $words . ' ' . $currency;
                                     }
                                 }
                             ?>
 
                                 <!-- LOGO -->
-                                <div>
+                                <div class="logo-box">
                                     <img src="<?php echo site_url($settings->logo_title); ?>" alt="Logo">
                                 </div>
 
@@ -477,7 +482,7 @@
                                 </div>
 
                                 <!-- ARABIC INFO -->
-                                <div class="company-info ar">
+                                <div class="company-info ar" style="font-size: 20px">
                                     <strong>اسم الشركة:</strong> مركز ود لايف للإرشاد الأسري<br>
                                     <b>العنوان: </b> شارع الصفا، حي الصفا، جدة ٤٢٥٢٥<br>
                                     <b>س. ت.:</b> <span style="font-size: 25px;"><?php echo toArabicNumbers($settings->cr ?? '403012345'); ?></span><br>
@@ -500,7 +505,7 @@
                                 <!--    <b>Address: / </b> <?php echo $patient_info->address; ?>&ensp;<b>/</b><b class="ar" style="font-size: 20px;">العنوان: </b><br> -->
                                         <b><?php echo lang('patient_id') ?>: /&ensp;</b> <?php echo $patient_info->id ?>&ensp; <b>/</b><b class="ar" style="font-size: 20px;">رقم تعريف المراجع: </b><br>
                                         <b>VAT ID: / </b> <?php echo $patient_info->vat ?? ''; ?>&ensp;<b>/</b><b class="ar" style="font-size: 20px;">الرقم الضريبي:  </b><br>
-                                        <b>Contact No.: /</b> <?php echo $patient_info->phone; ?><b>/</b><b class="ar" style="font-size: 20px;">رقم التواصل: </b>
+                                        <b>Contact No.: /</b> <?php echo $patient_info->phone; ?>&ensp;<b>/</b><b class="ar" style="font-size: 20px;">رقم التواصل: </b>
                                     </div>
                                 </div>
 
@@ -527,7 +532,7 @@
                                             <th class="text-center">Total Before VAT<br><div class="ar text-center">الإجمالي قبل الضريبة</div></th>
                                             <th class="text-center">VAT %<br><div class="ar text-center">الضريبة</div></th>
                                             <th class="text-center">VAT Amount<br><div class="ar text-center">قيمة الضريبة</div></th>
-                                            <th>Total (SAR)<br><div class="ar text-center">الإجمالي</div></th>
+                                            <th class="text-center">Total (SAR)<br><div class="ar text-center">الإجمالي</div></th>
                                         </tr>
                                     </thead>
                                 <tbody>
@@ -604,12 +609,18 @@
                                     <div class="qr-text"><!-- &emsp;Scan QR -->
                                     </div>
                                 </div>
-                                <div>
+                                <div class="qr-box2"> 
                                     <p></p>
                                         <?php echo AmountInWords($total); ?>
                                         <p></p>
                                                 <!-- Paid / Due badge -->
-                                                
+                                                <div class="download-badge">
+                                                    <?php if ($balance_due <= 0): ?>
+                                                        <span class="paid-badge">&emsp;<?php echo lang('paid'); ?>&emsp;</span>
+                                                    <?php else: ?>
+                                                        <span class="due-badge">&emsp;<?php echo lang('due_have'); ?>&emsp;</span>
+                                                    <?php endif; ?>
+                                                </div>
                                 </div>
                                 
                                 <!-- SUMMARY -->
@@ -635,7 +646,7 @@
                                         </tr>
                                         <tr class="total-highlight">
                                             <td style="padding-top: 10px; padding-bottom: 10px"><b style="font-size: 22px;">&ensp;Invoice Total (SAR):</b></td>
-                                            <td><span style="font-size: 23px;">R</span>&nbsp;<b style="font-size: 22px;"><?php echo number_format($total, 2); ?></b></td>
+                                            <td><span class="saprice" style="font-size: 23px;">R</span>&nbsp;<b style="font-size: 22px;"><?php echo number_format($total, 2); ?></b></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -684,7 +695,12 @@
                             <div class="text-center" style="padding-top: 15px">
                                 <?php echo $settings->footer_invoice_message; ?>
                             </div>
-                                        
+                                        <div style="text-align: center;">
+                                                    <p></p>
+                                                <img class="image_bar" alt="testing" src="<?php echo site_url('lab/barcode') ?>">
+                                                <p></p><div class="qr-text"><b>000<?php echo $payment->id; ?></b><br><label class="control-label image_text"></label></div>
+                                            
+                                        </div>
                             </div>
 
                             <div class="line-top-bar">
